@@ -23,39 +23,39 @@ public class Main {
 //        task9();
 //        task10();
 //        task11();
-        task12();
+//        task12();
 //        task13();
 //        task14();
-//        task15();
+        task15();
 
     }
 
     private static void task1() throws IOException {
         List<Animal> animals = Util.getAnimals();
         animals.stream()
-                .filter(animal -> animal.getAge()>=10 && animal.getAge()<=20)
+                .filter(animal -> animal.getAge() >= 10 && animal.getAge() <= 20)
                 .sorted(Comparator.comparingInt(Animal::getAge))
                 .skip(14).limit(7)
                 .forEach(System.out::println);
     }
 
     private static void task2() throws IOException {
-          List<Animal> animals = Util.getAnimals();
-         animals.stream()
-                .filter(animal ->animal.getOrigin().equals("Japanese") && animal.getGender().equals("Female"))
+        List<Animal> animals = Util.getAnimals();
+        animals.stream()
+                .filter(animal -> animal.getOrigin().equals("Japanese") && animal.getGender().equals("Female"))
                 .map(Animal::getBread)
                 .map(String::toUpperCase)
-                 .forEach(System.out::println);
+                .forEach(System.out::println);
     }
 
     private static void task3() throws IOException {
         List<Animal> animals = Util.getAnimals();
         animals.stream()
                 .filter(animal -> animal.getAge() > 30)
-                .filter(animal ->animal.getOrigin().startsWith("A"))
+                .filter(animal -> animal.getOrigin().startsWith("A"))
                 .map(Animal::getOrigin)
                 .distinct()
-        .forEach(System.out::println);
+                .forEach(System.out::println);
     }
 
     private static void task4() throws IOException {
@@ -68,34 +68,34 @@ public class Main {
 
     private static void task5() throws IOException {
         List<Animal> animals = Util.getAnimals();
-boolean match = animals.stream()
-        .filter(animal -> animal.getAge()>=20 && animal.getAge()<=30)
-        .anyMatch(animal-> animal.getOrigin().equals("Hungarian"));
+        boolean match = animals.stream()
+                .filter(animal -> animal.getAge() >= 20 && animal.getAge() <= 30)
+                .anyMatch(animal -> animal.getOrigin().equals("Hungarian"));
         System.out.println(match);
     }
 
     private static void task6() throws IOException {
         List<Animal> animals = Util.getAnimals();
-       boolean allMatch = animals.stream()
-               .allMatch(animal -> animal.getGender().equals("Male") && animal.getGender().equals("Female"));
+        boolean allMatch = animals.stream()
+                .allMatch(animal -> animal.getGender().equals("Male") && animal.getGender().equals("Female"));
         System.out.println(allMatch);
     }
 
     private static void task7() throws IOException {
         List<Animal> animals = Util.getAnimals();
-boolean noneMatch = animals.stream()
-        .noneMatch(animal -> animal.getOrigin().equals("Oceania"));
+        boolean noneMatch = animals.stream()
+                .noneMatch(animal -> animal.getOrigin().equals("Oceania"));
         System.out.println(noneMatch);
     }
 
     private static void task8() throws IOException {
         List<Animal> animals = Util.getAnimals();
-       long age = animals.stream()
+        long age = animals.stream()
                 .sorted(Comparator.comparing(Animal::getBread))
                 .limit(100)
-               .map(animal -> animal.getAge())
-               .max(Integer::compare).get();
-        System.out.println("Возраст самого старого: "+age);
+                .map(animal -> animal.getAge())
+                .max(Integer::compare).get();
+        System.out.println("Возраст самого старого: " + age);
     }
 
     private static void task9() throws IOException {
@@ -104,38 +104,39 @@ boolean noneMatch = animals.stream()
                 .map(animal -> animal.getBread())
                 .collect(Collectors.joining())
                 .chars()
-                .mapToObj(a->(char)a)
+                .mapToObj(a -> (char) a)
                 .forEach(System.out::println);
-
+// здесь тоже нужна подсказка по преобразованию в []char
     }
 
     private static void task10() throws IOException {
         List<Animal> animals = Util.getAnimals();
-       Integer sum = animals.stream()
-               .mapToInt(Animal::getAge)
-               .sum();
-               System.out.println(sum);
+        Integer sum = animals.stream()
+                .mapToInt(Animal::getAge)
+                .sum();
+        System.out.println(sum);
 
     }
     private static void task11() throws IOException {
         List<Animal> animals = Util.getAnimals();
-        OptionalDouble average= animals.stream()
+        OptionalDouble average = animals.stream()
                 .filter(animal -> animal.getOrigin().equals("Indonesian"))
                 .mapToInt(Animal::getAge)
                 .average();
-                 System.out.println(average);
+        System.out.println(average);
     }
 
     private static void task12() throws IOException {
         List<Person> people = Util.getPersons();
         people.stream()
                 .filter(person -> person.getGender().equals("Male"))
-                .filter(person -> (person.getDateOfBirth().getYear()<=2006)
-                        && person.getDateOfBirth().getYear()>=1997)
+                .filter(person -> (person.getDateOfBirth().getYear() <= 2006)
+                        && person.getDateOfBirth().getYear() >= 1997)
+                // здесь наверное нужно использовать localdatetime
+                // сначала преобразовать, потом сравнить?
                 .map(person -> person.getRecruitmentGroup())
+
                 .forEach(System.out::println);
-
-
 
 
     }
@@ -150,6 +151,37 @@ boolean noneMatch = animals.stream()
 
     private static void task15() throws IOException {
         List<Flower> flowers = Util.getFlowers();
-    }
+        Comparator<Flower> flowerOrigComparatorRevers = (o1, o2) -> o2.getOrigin().compareTo(o1.getOrigin());
+        Comparator<Flower> flowerPriceComparator = (o1, o2) -> o2.getPrice();
+        Comparator<Flower> flowerWaterComparator = (o1, o2) -> (int) (o1.getWaterConsumptionPerDay() - o2.getWaterConsumptionPerDay());
+        flowers.stream()
+                .limit(20) //временно,  для удобства просмотра
+                .sorted(flowerOrigComparatorRevers
+                        .thenComparing(flowerPriceComparator).reversed()
+                        .thenComparing(flowerWaterComparator).reversed())
+                        .filter(flower ->
+                        flower.getCommonName().charAt(0) >= 'C' &&
+                                flower.getCommonName().charAt(0) <= 'S')
+                         .filter(flower -> flower.getFlowerVaseMaterial()
+                        .stream()
+                        .anyMatch(s -> "Steel".equals(s) ||
+                                "Glass".equals(s) || "Aluminum".equals(s)))
+                // затем, используя map я могу преобразовать и посчитать водопотребление
+        // но далее мне нужно посчитать price и тоже суммировать  ??
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
+}
