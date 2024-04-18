@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.Long.sum;
+
 public class Main {
     public static void main(String[] args) throws IOException {
 //        task1();
@@ -26,7 +28,7 @@ public class Main {
 //        task12();
 //        task13();
 //        task14();
-        task15();
+//        task15();
 
     }
 
@@ -132,11 +134,7 @@ public class Main {
                 .filter(person -> person.getGender().equals("Male"))
                 .filter(person -> (person.getDateOfBirth().getYear() <= 2006)
                         && person.getDateOfBirth().getYear() >= 1997)
-                // здесь наверное нужно использовать localdatetime
-                // сначала преобразовать, потом сравнить?
-                .map(person -> person.getRecruitmentGroup())
 
-                .forEach(System.out::println);
 
 
     }
@@ -154,33 +152,20 @@ public class Main {
         Comparator<Flower> flowerOrigComparatorRevers = (o1, o2) -> o2.getOrigin().compareTo(o1.getOrigin());
         Comparator<Flower> flowerPriceComparator = (o1, o2) -> o2.getPrice();
         Comparator<Flower> flowerWaterComparator = (o1, o2) -> (int) (o1.getWaterConsumptionPerDay() - o2.getWaterConsumptionPerDay());
-        flowers.stream()
-                .limit(20) //временно,  для удобства просмотра
+        int sum = flowers.stream()
                 .sorted(flowerOrigComparatorRevers
                         .thenComparing(flowerPriceComparator).reversed()
                         .thenComparing(flowerWaterComparator).reversed())
-                        .filter(flower ->
+                .filter(flower ->
                         flower.getCommonName().charAt(0) >= 'C' &&
                                 flower.getCommonName().charAt(0) <= 'S')
-                         .filter(flower -> flower.getFlowerVaseMaterial()
+                .filter(flower -> flower.getFlowerVaseMaterial()
                         .stream()
                         .anyMatch(s -> "Steel".equals(s) ||
                                 "Glass".equals(s) || "Aluminum".equals(s)))
-                // затем, используя map я могу преобразовать и посчитать водопотребление
-        // но далее мне нужно посчитать price и тоже суммировать  ??
-
-
-
-
-
-
-
-
-
-
-
-
-
+                .mapToInt(flower -> flower.getPrice()).sum();
+        //частичное решение
+        System.out.println(sum);
 
 
     }
